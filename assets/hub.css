@@ -1,0 +1,36 @@
+/* hub.css — 入口页样式（依赖 base.css） */
+.draft-banner {
+  position: sticky; top: 0; z-index: 30; padding: 8px 16px; text-align: center;
+  font-size: 13px; font-weight: 700; line-height: 1.4;
+  color: var(--warn-text); background: var(--warn-bg); border-bottom: 1px solid var(--warn-line);
+}
+.page { max-width: 520px; margin: 0 auto; padding: 16px 16px calc(40px + env(safe-area-inset-bottom)); }
+.topbar { display: flex; align-items: center; gap: 12px; }
+.topbar .logo { width: 40px; height: 40px; border-radius: 10px; flex: none; }
+.topbar-text { display: flex; flex-direction: column; line-height: 1.25; }
+.topbar-text strong { font-size: 16px; }
+.topbar-text span { font-size: 12px; color: var(--text-secondary); }
+.hero { margin-top: 28px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: .04em; color: var(--bit-action-blue); }
+.eyebrow::before { content: ""; width: 18px; height: 3px; border-radius: 2px; background: var(--bit-blue); }
+.hero h1 { margin-top: 10px; font-size: clamp(28px, 8.4vw, 36px); line-height: 1.18; font-weight: 800; letter-spacing: -.01em; color: var(--bit-ink); }
+.hero h1 .hl { color: var(--bit-blue); }
+.lede { margin-top: 12px; font-size: 15px; line-height: 1.65; color: var(--text-secondary); }
+
+.list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+.act {
+  display: block; padding: 18px 18px 16px; text-decoration: none; color: inherit;
+  background: var(--bit-white); border: 1px solid var(--bit-line); border-radius: var(--radius-campaign);
+  box-shadow: var(--shadow-soft); transition: transform .12s ease, border-color .12s ease;
+}
+.act:hover { border-color: var(--bit-blue); }
+.act:active { transform: translateY(1px); }
+.act-top { display: flex; align-items: center; gap: 10px; }
+.act-tag { padding: 3px 10px; border-radius: 999px; background: var(--bit-pale-blue); color: var(--bit-action-blue); font-size: 12px; font-weight: 700; }
+.act-draft { padding: 3px 10px; border-radius: 999px; background: var(--warn-bg); color: var(--warn-text); font-size: 12px; font-weight: 700; }
+.act h2 { margin-top: 10px; font-size: 20px; line-height: 1.3; }
+.act p { margin-top: 6px; font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
+.act-go { display: inline-block; margin-top: 12px; font-size: 15px; font-weight: 800; color: var(--bit-blue); }
+.empty { margin-top: 24px; padding: 20px; text-align: center; font-size: 14px; color: var(--text-secondary); background: var(--bit-white); border: 1px dashed var(--bit-muted); border-radius: var(--radius-campaign); }
+.foot { margin-top: 28px; padding: 0 4px; }
+.foot p { margin: 0 0 10px; font-size: 13px; line-height: 1.7; color: var(--bit-deep-navy); }

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN" class="guard">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <script src="../assets/guard.js"></script>
+  <title>转盘配置台</title>
+  <link rel="icon" href="../assets/bit-logo.png">
+  <link rel="stylesheet" href="../assets/base.css">
+  <link rel="stylesheet" href="wheel.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+  <main class="admin">
+    <header class="admin-head">
+      <img class="logo" src="../assets/bit-logo.png" alt="BIT" width="40" height="40">
+      <div>
+        <h1>转盘配置台</h1>
+        <p>在这里调奖项和概率，导出 config.js 后替换站点里的同名文件即可更新页面（正式对客须按公司 SOP 走 MR 评审）。本页只在你的浏览器里运算，不会修改线上内容，也不会上传任何数据；奖项的内部成本只保存在这台电脑的浏览器里，不会写进导出的文件。</p>
+      </div>
+    </header>
+
+    <div class="admin-grid">
+      <div class="col-main">
+        <section class="card" id="secPrizes">
+          <h2>1 · 奖项与概率</h2>
+          <p class="hint-line">概率权重不必凑成 100，系统按比例折算；点「归一化」可让数字直接等于百分比。建议奖项数 6–10 个。</p>
+          <div class="table-wrap">
+            <table class="tbl prize-tbl">
+              <thead>
+                <tr><th>名称</th><th>副标题</th><th class="r">概率权重</th><th class="r">实际概率</th><th class="r" title="仅保存在本机浏览器，不会导出">内部成本 US$</th><th>大奖</th><th>排序/删除</th></tr>
+              </thead>
+              <tbody id="prizeBody"></tbody>
+            </table>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-ghost btn-sm" id="addPrize" type="button">＋ 添加奖项</button>
+            <button class="btn btn-ghost btn-sm" id="normalize" type="button">归一化到 100%</button>
+            <button class="btn btn-ghost btn-sm" id="equalize" type="button">平均分配</button>
+          </div>
+          <p class="sumline" id="sumLine"></p>
+          <ul class="msgs" id="msgs"></ul>
+        </section>
+
+        <section class="card" id="secBasic">
+          <h2>2 · 基本信息与文案</h2>
+          <div class="form-grid">
+            <label class="f"><span>状态</span>
+              <select class="input" data-path="status"><option value="draft">draft · 草稿（显示草稿横幅）</option><option value="live">live · 正式（须先通过上线闸门与审批）</option></select>
+            </label>
+            <label class="f"><span>期号（campaignId）</span>
+              <span class="inline"><input class="input" data-path="campaignId" type="text" autocomplete="off"><button class="btn btn-ghost btn-sm" id="newCampaign" type="button">新一期</button></span>
+            </label>
+            <label class="f"><span>顶部胶囊（渠道名称）</span><input class="input" data-path="channelName" type="text"></label>
+            <label class="f"><span>标题</span><input class="input" data-path="title" type="text"></label>
+            <label class="f"><span>标题中高亮的词（须是标题的一部分）</span><input class="input" data-path="highlight" type="text"></label>
+            <label class="f"><span>UID 标签</span><input class="input" data-path="uidLabel" type="text"></label>
+            <label class="f f-wide"><span>副标题</span><textarea class="input" data-path="subtitle" rows="2"></textarea></label>
+            <label class="f"><span>开始时间（可空）</span><input class="input" data-path="startAt" type="text" placeholder="2026-10-08T00:00:00+08:00"></label>
+            <label class="f"><span>结束时间</span><input class="input" data-path="endAt" type="text" placeholder="2026-10-31T23:59:59+08:00"></label>
+            <label class="f"><span>UID 格式（正则；默认 1–9 开头的 6–10 位数字，请按真实 UID 位数确认）</span><input class="input" data-path="uidPattern" type="text"></label>
+            <label class="f"><span>最后更新日期</span><input class="input" data-path="updatedAt" type="text" placeholder="2026-10-07"></label>
+            <label class="f"><span>待机转速（度/秒，0=不转）</span><input class="input" data-path="idleSpeed" data-type="number" type="number" min="0" max="120" step="1"></label>
+            <label class="f"><span>抽奖动画时长（秒）</span><input class="input" data-path="spinSeconds" data-type="number" type="number" min="2" max="12" step="0.2"></label>
+            <label class="f f-check"><input data-path="showOdds" data-type="bool" type="checkbox"><span>对客户公示奖项概率（建议保持开启；关闭前请先与合规确认）</span></label>
+          </div>
+          <h3>联系方式（留空则不显示对应按钮）</h3>
+          <div class="form-grid">
+            <label class="f"><span>Telegram（@用户名 或 t.me 链接）</span><input class="input" data-path="contact.telegram" type="text" placeholder="@your_name"></label>
+            <label class="f"><span>微信号</span><input class="input" data-path="contact.wechat" type="text"></label>
+            <label class="f f-wide"><span>入金入口链接（仅 https）</span><input class="input" data-path="contact.depositUrl" type="text" placeholder="https://…"></label>
+          </div>
+          <h3>领奖步骤、规则与声明</h3>
+          <div class="form-grid">
+            <label class="f f-wide"><span>与官方活动的关系说明（显示在“如何领奖”卡片顶部与结果面板）</span><textarea class="input" data-path="notice" rows="3"></textarea></label>
+            <label class="f f-wide"><span>入金自愿与风险提示（显示在领奖步骤下方与结果面板按钮上方）</span><textarea class="input" data-path="riskNotice" rows="3"></textarea></label>
+            <label class="f f-wide"><span>领奖步骤（每行一条）</span><textarea class="input" data-path="claim.steps" data-type="lines" rows="4"></textarea></label>
+            <label class="f f-wide"><span>活动规则（每行一条）</span><textarea class="input" data-path="rules" data-type="lines" rows="6"></textarea></label>
+            <label class="f f-wide"><span>页脚声明（每行一段：渠道声明 / 风险提示 / 安全提醒）</span><textarea class="input" data-path="disclaimer" data-type="lines" rows="5"></textarea></label>
+          </div>
+        </section>
+
+        <section class="card" id="secVerify">
+          <h2>3 · 核验（客户来领奖时用）</h2>
+          <p class="hint-line">只证明「这个 UID 在这一期按算法抽中了这个奖」。校验码没有密钥，只防抄错、不防伪造；是否首次入金、是否达标、是否本渠道客户、是否已领取过，仍需另行核对。发奖以这里按真实 UID 复算的结果为准，不要以客户发来的截图或文字为准。</p>
+          <div class="verify-grid">
+            <div>
+              <label class="field-label" for="vUid">按 UID 复算（请输入数据平台里的真实 UID，不要从客户记录里复制）</label>
+              <div class="uid-row"><input class="input" id="vUid" type="text" autocomplete="off" placeholder="客户的 UID"><button class="btn btn-primary btn-sm" id="vUidBtn" type="button">复算</button></div>
+              <pre class="voucher" id="vUidOut" hidden></pre>
+            </div>
+            <div>
+              <label class="field-label" for="vText">粘贴客户发来的抽奖记录</label>
+              <textarea class="input" id="vText" rows="6" placeholder="【专属转盘·抽奖记录】&#10;期号：…&#10;UID：…&#10;奖项：…&#10;校验码：…"></textarea>
+              <div class="btn-row"><button class="btn btn-primary btn-sm" id="vTextBtn" type="button">校验抽奖记录</button></div>
+              <p class="verdict" id="vTextOut" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="secExport">
+          <h2>4 · 导出并上线</h2>
+          <p class="hint-line">导出的 config.js 不含内部成本。有错误时无法导出；status 为 live 时会执行“上线闸门”（对客文案不得含“示例/草稿/待确认”字样，声明、规则、联系方式、风险提示不得为空）。</p>
+          <ol class="claim-steps">
+            <li>点「复制 config.js」或「下载 config.js」。</li>
+            <li><b>预览阶段</b>：替换站点里的 <code>wheel/config.js</code> 并重新发布（静态托管通常有最长约 10 分钟的缓存，验证时可在链接后加 <code>?v=2</code>）。</li>
+            <li><b>正式对客</b>：把新的 <code>config.js</code> 交给前端（Wood 团队），走 GitLab MR → 安全审查 → 从通过审查的 commit 部署。不要在线上直接改。</li>
+          </ol>
+          <p class="verdict bad" id="exportBlock" hidden>当前配置有错误，已禁用导出。请先修正上方红色提示。</p>
+          <div class="btn-row">
+            <button class="btn btn-blue" id="copyCfg" type="button">复制 config.js</button>
+            <button class="btn btn-ghost" id="dlCfg" type="button">下载 config.js</button>
+          </div>
+          <textarea class="input code" id="cfgOut" rows="12" readonly aria-label="生成的 config.js"></textarea>
+        </section>
+      </div>
+
+      <aside class="col-side">
+        <section class="card sticky">
+          <h2>实时预览</h2>
+          <div class="admin-wheel" id="previewHolder"></div>
+          <div class="budget" id="budget"></div>
+        </section>
+        <section class="card">
+          <h2>抽样模拟</h2>
+          <p class="hint-line">用一批不同的 UID 实际跑抽奖算法，看实际分布是否贴近你设定的概率。</p>
+          <div class="uid-row"><input class="input" id="simN" type="number" min="1000" max="200000" step="1000" value="20000" aria-label="模拟次数"><button class="btn btn-primary btn-sm" id="simBtn" type="button">开始模拟</button></div>
+          <p class="hint-line" id="simNote"></p>
+          <div class="table-wrap sim-wrap" id="simWrap" hidden>
+            <table class="tbl"><thead><tr><th>奖项</th><th class="r">设定</th><th class="r">模拟</th><th class="r">偏差</th></tr></thead><tbody id="simBody"></tbody></table>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="engine.js"></script>
+  <script src="config.js"></script>
+  <script src="render.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
